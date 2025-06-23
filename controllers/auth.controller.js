@@ -72,6 +72,11 @@ export const loginDoctor = async (req, res, next) => {
       createError(400, "Email or password is invalid")
     }
 
+    const checkPassword = bcrypt.compareSync(password, doctor.password)
+    if (!checkPassword) {
+      createError(400, "Email or Password is Invalid!")
+    }
+
     const payload = {
       id: doctor.id,
       role: doctor.role,
@@ -105,6 +110,11 @@ export const loginUser = async (req, res, next) => {
       createError(400, "Email or password is invalid")
     }
 
+ const checkPassword = bcrypt.compareSync(password, user.password)
+    if (!checkPassword) {
+      createError(400, "Email or Password is Invalid!")
+    }
+    
     const payload = {
       id: user.id,
       role: user.role,
