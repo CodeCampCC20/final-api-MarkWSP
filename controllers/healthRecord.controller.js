@@ -4,10 +4,11 @@ import prisma from "../config/prisma.js";
 export const createHealthRecord = async (req, res, next) => {
   try {
     const { type, value } = req.body;
-
-   
+    const userId = req.user.id;
+   console.log("gaga", userId)
     const result = await prisma.health_Records.create({
       data: {
+        userId: Number(userId),
         type: type,
         value: value
       },

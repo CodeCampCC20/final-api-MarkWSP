@@ -8,7 +8,7 @@ export const authCheck = (req, res, next) => {
     const header = req.headers.authorization;
    
     if(!header) {
-      createError(401, "Token is missing")
+      createError(401, "Authentication required")
     }
 
     const token = header.split(' ')[1]
@@ -16,7 +16,7 @@ export const authCheck = (req, res, next) => {
 
     jwt.verify(token, process.env.SECRET_KEY, (error, decode)=>{
       if(error){
-        createError(401, "Token is Invalid")
+        createError(401, "You don't have permission to perform this action")
       }
       req.user = decode
       

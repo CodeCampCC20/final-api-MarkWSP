@@ -4,11 +4,12 @@ import prisma from "../config/prisma.js";
 export const createDoctorNotes = async (req, res, next) => {
   try {
     const { userId, note } = req.body;
-
+const doctorId = req.user.id;
    
     const doctor_Notes = await prisma.doctor_Notes.create({
       data: {
         userId: Number(userId),
+        doctorId: Number(doctorId),
         note: note
       },
     });
@@ -41,7 +42,7 @@ export const getDoctorNotesById = async (req, res, next) => {
   try {
     const { userId } = req.params;
    
-    const doctor_Notes = await prisma.doctor_Notes.findUnique({
+    const doctor_Notes = await prisma.doctor_Notes.findMany({
       where: {
         userId: Number(userId),
       },
@@ -56,9 +57,11 @@ export const getDoctorNotesById = async (req, res, next) => {
 export const getDoctorNotesByReceived = async (req, res, next) => {
   try {
    
-   
+   const { doctorId } = req.user;
     const doctor_Notes = await prisma.doctor_Notes.findMany({
-    
+    where: {
+        doctorId: Number(doctorId),
+      },
     });
 
     res.json({ result: doctor_Notes });
@@ -73,7 +76,9 @@ export const updateDoctorNoteById = async (req, res, next) => {
 try {
     const {id} = req.params
    const {note} = req.body
-
+ if (!note) {
+      return next(createError(400, "Note is missing"));
+    }
   const doctor_Notes = await prisma.doctor_Notes.update({
     where: {
       id: Number(id),
